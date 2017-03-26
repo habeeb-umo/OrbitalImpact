@@ -83,7 +83,7 @@ class Body:
         self.originalDisance=self.inferiorDistance
 
     def __str__(self):
-        ret = "BODY "+self.name+"{ Rank: "+str(self.rank)+" Inferior Distance: "+str(self.inferiorDistance)
+        ret = "BODY "+self.name+"{ Rank: "+str(self.rank)+ " Tier: "+str(self.tier)+" Inferior Distance: "+str(self.inferiorDistance)
         ret= ret + " Orbital Variance: "+str(self.distanceVariance)+" Increasing Variance: "+str(self.increasingVariance)+" Active Variance: "+str(self.activeVariance)+" Orbital Velocity: "+str(self.orbitalVelocity)+"}"
         return ret
 

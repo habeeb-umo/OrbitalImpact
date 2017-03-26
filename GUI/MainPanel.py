@@ -155,17 +155,16 @@ class MainPanel (ShowBase):
 #-----------------------------------GUI Element Place Methods here----------------------------#
     def placeButton(self, button):
         enode = self.loader.loadModel(button.getPullLocation())
-        enode.setTexture(self.loader.loadTexture(button.getTextureLocation()))
         enode.setHpr(0,0,90)
         enode.setScale(button.getScale())
         self.makePickable(enode)
-
         x = self.XgridToLoc(button.getXGrid());
         y = self.YgridToLoc(button.getYGrid())
-        enode.setPos(-.12, x, y)
+        enode.setPos(-.11, x, y)
         enode.setShaderAuto()
         enode.reparentTo(self.backPanel)
         self.elementList.append([enode, button])
+        return enode
 
     def placeText(self, element):
         #create text node
@@ -174,8 +173,10 @@ class MainPanel (ShowBase):
         containerNode.setHpr(-90,0,0)
         x = self.XgridToLoc(element.getXGrid());
         y = self.YgridToLoc(element.getYGrid())
-        containerNode.setPos(-.12,0,0)
-        textObject =  OnscreenText(text = 'my text string', pos =(-1.001,0.02) , scale = 0.07, parent=containerNode)
+        containerNode.setPos(-.10001,x,y)
+        textObject =  OnscreenText(text = element.getText(), scale = 0.032, parent=containerNode)
+        self.elementList.append([containerNode, element])
+        return [containerNode, textObject]
 
 app=MainPanel()
 app.run()
