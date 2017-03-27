@@ -1,4 +1,4 @@
-from direct.gui.OnscreenText import OnscreenText
+from direct.gui.OnscreenText import OnscreenText, TextNode
 from panda3d.core import NodePath
 
 
@@ -46,6 +46,9 @@ class Button:
         self.panel.addToElementList([enode,self])
         self.element = enode
 
+    def getNode(self):
+        return self.element
+
 class PlanetButton(Button):
     def __init__(self, Panel, x,y,clickFunc):
         self.pullLocation = "GDAT/Meshes/planet_sphere.egg.pz"
@@ -59,8 +62,8 @@ class PlanetButton(Button):
 class ScreenText:
     def __init__(self, Panel, x, y, data):
         self.data=data
-        self.x = x
-        self.y = y
+        self.x = x-.5
+        self.y = y-.5
         self.Panel=Panel
         self.place()
 
@@ -83,6 +86,7 @@ class ScreenText:
         y = self.Panel.YgridToLoc(self.y)
         containerNode.setPos(-.1000001, x, y)
         textObject =  OnscreenText(text = self.getText(), scale = 0.032, parent=containerNode)
+        textObject.setAlign(TextNode.A_boxed_left)
         self.node = containerNode
         self.textObject = textObject;
 

@@ -16,12 +16,16 @@ class SolarSystem:
         for planet in self.celestials:
             s=s+str(planet)+"\n"
         return s
+    def __len__(self):
+        return len(self.celestials)
+    def __getitem__(self, item):
+        return self.celestials[item]
 
     def getBody(self, index):
         return self.celestials[index]
 
     def runTurn(self):
-        for planet in self.celestialList:
+        for planet in self.celestials:
             planet.runTurn()
     def computeTier(self, i):
         if(i>(self.size/(3.0)*2.0)):

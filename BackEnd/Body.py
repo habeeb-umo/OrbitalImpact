@@ -99,8 +99,27 @@ class Body:
             if self.inferiorDistance<(self.originalDisance-self.distanceVariance):
                 self.increasingVariance=True
 
+    def distanceTo(self, targetBody):
+        if(targetBody == self):
+            return 0
+        if(targetBody.getRank()<self.rank):
+            return self.distanceToInferior(targetBody)
 
+    def distanceToPosterior(self, targetBody):
+        head = self
+        dvSum = 0
+        while head.getRank() < targetBody.getRank():
+            dvSum += head.getPosteriorDistance()
+            head = head.getPosterior()
+        return dvSum
 
+    def distanceToInferior(self, targetBody):
+        head = self
+        dvSum = 0
+        while head.getRank() > targetBody.getRank():
+            dvSum += head.getInferiorDistance()
+            head = head.getInferior()
+        return dvSum
 
 
     def setPosteriorDistance(self, distance):
@@ -111,5 +130,21 @@ class Body:
 
     def addToOrbit(self, other):
         self.orbitingEntities.append(other)
+
     def removeFromOrbit(self, other):
         self.orbitingEntities.remove(other)
+
+    def getName(self):
+        return self.name
+
+    def getPosterior(self):
+        return self.getPosterior()
+    def getPosteriorDistance(self):
+        return self.posteriorDistance
+
+    def getInferior(self):
+        return self.inferior
+    def getInferiorDistance(self):
+        return self.inferiorDistance
+    def getRank(self):
+        return self.rank

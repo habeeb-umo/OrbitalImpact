@@ -155,18 +155,5 @@ class MainPanel (ShowBase):
     def addToElementList(self, nodeElement):
         self.elementList.append(nodeElement)
 
-#-----------------------------------GUI Element Place Methods here----------------------------#
-    def placeText(self, element):
-        #create text node
-        containerNode =  NodePath("Text container")
-        containerNode.reparent_to(self.backPanel)
-        containerNode.setHpr(-90,0,0)
-        x = self.XgridToLoc(element.getXGrid());
-        y = self.YgridToLoc(element.getYGrid())
-        containerNode.setPos(-.10001,x,y)
-        textObject =  OnscreenText(text = element.getText(), scale = 0.032, parent=containerNode)
-        self.elementList.append([containerNode, element])
-        return [containerNode, textObject]
-
 app=MainPanel()
 app.run()
