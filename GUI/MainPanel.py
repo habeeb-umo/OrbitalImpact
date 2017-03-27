@@ -84,7 +84,6 @@ class MainPanel (ShowBase):
         self.mLightPointer.lookAt(self.backPanel)
         self.render.setLight(self.mLightPointer)
 
-
     def grid(self):
         step = .06
         for t in range(0,42):
@@ -107,11 +106,9 @@ class MainPanel (ShowBase):
             tNode.setPos(-.13, x, y)
             tNode.setShaderAuto()
 
-
     def place(self, element):
         func = element.testFunc()
         func(element)
-
 
     def getObjectHit(self, mpos):  # mpos is the position of the mouse on the screen
         self.pickedObj = None  # be sure to reset this
@@ -152,20 +149,13 @@ class MainPanel (ShowBase):
     def YgridToLoc(self, ygrid):
         return self.TOP-(ygrid*self.STEP)
 
-#-----------------------------------GUI Element Place Methods here----------------------------#
-    def placeButton(self, button):
-        enode = self.loader.loadModel(button.getPullLocation())
-        enode.setHpr(0,0,90)
-        enode.setScale(button.getScale())
-        self.makePickable(enode)
-        x = self.XgridToLoc(button.getXGrid());
-        y = self.YgridToLoc(button.getYGrid())
-        enode.setPos(-.11, x, y)
-        enode.setShaderAuto()
-        enode.reparentTo(self.backPanel)
-        self.elementList.append([enode, button])
-        return enode
+    def getPanelNode(self):
+        return self.backPanel
 
+    def addToElementList(self, nodeElement):
+        self.elementList.append(nodeElement)
+
+#-----------------------------------GUI Element Place Methods here----------------------------#
     def placeText(self, element):
         #create text node
         containerNode =  NodePath("Text container")

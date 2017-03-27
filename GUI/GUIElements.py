@@ -1,3 +1,7 @@
+from direct.gui.OnscreenText import OnscreenText
+from panda3d.core import NodePath
+
+
 class Button:
     #This class models a button in game, storing the location, the function to call on click, and the
     def __init__(self, Panel, x, y, clickFunc):
@@ -8,7 +12,7 @@ class Button:
         self.scale=.023
         self.clickFunc=clickFunc
         self.panel=Panel
-        self.element = self.panel.placeButton(self)
+        self.place()
 
     def getPullLocation(self):
         return self.pullLocation
@@ -29,8 +33,22 @@ class Button:
     def remove(self):
         self.element.removeNode()
 
+    def place(self):
+        enode = self.panel.loader.loadModel(self.getPullLocation())
+        enode.setHpr(0,0,90)
+        enode.setScale(self.scale)
+        self.panel.makePickable(enode)
+        x = self.panel.XgridToLoc(self.x)
+        y = self.panel.YgridToLoc(self.y)
+        enode.setPos(-.11,x,y)
+        enode.setShaderAuto()
+        enode.reparentTo(self.panel.getPanelNode())
+        self.panel.addToElementList([enode,self])
+        self.element = enode
+
 class PlanetButton(Button):
     def __init__(self, Panel, x,y,clickFunc):
+        self.pullLocation = "GDAT/Meshes/planet_sphere.egg.pz"
         Button.__init__(self,Panel,x,y,clickFunc)
         self.element.setTexture(Panel.loader.loadTexture("GDAT/Textures/hubble_friday_07012016.jpg"))
     def getPullLocation(self):
@@ -38,18 +56,13 @@ class PlanetButton(Button):
     def getTextureLocation(self):
         return "GDAT/Textures/hubble_friday_07012016.jpg"
 
-
 class ScreenText:
-    def __init__(self, Panel, x, y, w, h, data):
+    def __init__(self, Panel, x, y, data):
         self.data=data
         self.x = x
         self.y = y
-        self.w = w
-        self.h = h
         self.Panel=Panel
-        nodeText = Panel.placeText(self)
-        self.node = nodeText[0]
-        self.textObject = nodeText[1]
+        self.place()
 
     def updateText(self, text):
         data=text
@@ -61,6 +74,17 @@ class ScreenText:
         return self.x
     def getYGrid(self):
         return self.y
+
+    def place(self):
+        containerNode = NodePath("TextContainer")
+        containerNode.reparent_to(self.Panel.getPanelNode())
+        containerNode.setHpr(-90,0,0)
+        x = self.Panel.XgridToLoc(self.x)
+        y = self.Panel.YgridToLoc(self.y)
+        containerNode.setPos(-.1000001, x, y)
+        textObject =  OnscreenText(text = self.getText(), scale = 0.032, parent=containerNode)
+        self.node = containerNode
+        self.textObject = textObject;
 
     def remove(self):
         self.textObject.removeNode()

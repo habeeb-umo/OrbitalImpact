@@ -11,10 +11,9 @@ class BackEngine:
         self.turn = 0
         self.solSystem=SolarSystem(self,9)
         self.activeVessel=None
-        pbutton = PlanetButton(self.BP,11,12,False)
-
-
 
     def runTurn(self):
         self.solSystem.runTurn()
 
+    def testFunc(self, button):
+        print("Hello, from BE")
