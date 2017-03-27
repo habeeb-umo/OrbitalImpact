@@ -83,7 +83,7 @@ class Body:
         self.originalDisance=self.inferiorDistance
 
     def __str__(self):
-        ret = "BODY "+self.name+"{ Rank: "+str(self.rank)+ " Tier: "+str(self.tier)+" Inferior Distance: "+str(self.inferiorDistance)
+        ret = "BODY "+self.name+"{ Rank: "+str(self.rank)+ " Tier: "+str(self.tier)+" Inferior Distance: "+str(self.inferiorDistance) + " Posterior Distance: "+str(self.posteriorDistance)
         ret= ret + " Orbital Variance: "+str(self.distanceVariance)+" Increasing Variance: "+str(self.increasingVariance)+" Active Variance: "+str(self.activeVariance)+" Orbital Velocity: "+str(self.orbitalVelocity)+"}"
         return ret
 
@@ -91,19 +91,22 @@ class Body:
     def runTurn(self):
         if self.rank !=0:
             if self.increasingVariance:
-                self.inferiorDistance=self.inferiorDistance+self.orbitalVelocity
+                self.inferiorDistance = self.inferiorDistance+self.orbitalVelocity
             if not self.increasingVariance:
-                self.inferiorDistance=self.inferiorDistance-self.orbitalVelocity
-            if self.inferiorDistance>(self.originalDisance+self.distanceVariance):
-                self.increasingVariance=False
-            if self.inferiorDistance<(self.originalDisance-self.distanceVariance):
-                self.increasingVariance=True
+                self.inferiorDistance = self.inferiorDistance-self.orbitalVelocity
+            if self.inferiorDistance > (self.originalDisance+self.distanceVariance):
+                self.increasingVariance = False
+            if self.inferiorDistance < (self.originalDisance-self.distanceVariance):
+                self.increasingVariance = True
+            self.inferior.setPosteriorDistance(self.inferiorDistance)
 
     def distanceTo(self, targetBody):
-        if(targetBody == self):
+        if targetBody == self:
             return 0
-        if(targetBody.getRank()<self.rank):
+        if targetBody.getRank()<self.rank:
             return self.distanceToInferior(targetBody)
+        if targetBody.getRank()>self.rank:
+            return self.distanceToPosterior(targetBody)
 
     def distanceToPosterior(self, targetBody):
         head = self
@@ -126,7 +129,7 @@ class Body:
         self.posteriorDistance=distance
 
     def setPosterior(self, outer):
-        self.posteriorDistance=outer
+        self.posterior=outer
 
     def addToOrbit(self, other):
         self.orbitingEntities.append(other)
@@ -138,11 +141,15 @@ class Body:
         return self.name
 
     def getPosterior(self):
-        return self.getPosterior()
+        if self.rank == len(self.solSys)-1:
+            return self
+        return self.posterior
     def getPosteriorDistance(self):
         return self.posteriorDistance
 
     def getInferior(self):
+        if self.rank == 0:
+            return self
         return self.inferior
     def getInferiorDistance(self):
         return self.inferiorDistance

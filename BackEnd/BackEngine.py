@@ -19,6 +19,6 @@ class BackEngine:
         self.solSystem.runTurn()
         self.activeVessel.runTurn()
     def getSolarSystem(self):
-        return self.solSystem;
+        return self.solSystem
     def getBackPanel(self):
         return self.BP

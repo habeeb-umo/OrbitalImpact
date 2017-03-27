@@ -16,11 +16,11 @@ class Vessel:
         self.navPlanet = self.planet
         self.navInfButton = Button(self.BE.getBackPanel(),15,9.5,self.navInfEvent)
         self.navinfMessage = ScreenText(self.BE.getBackPanel(),15,11, "Inf")
-        self.navSelButton = Button(self.BE.getBackPanel(),16,9.5,self.navEvent)
+        self.navSelButton = Button(self.BE.getBackPanel(),16,9.5,self.navSelEvent)
         self.navSelMessage = ScreenText(self.BE.getBackPanel(),16,11, "Sel")
-        self.navPostButton = Button(self.BE.getBackPanel(),17,9.5,self.navEvent)
+        self.navPostButton = Button(self.BE.getBackPanel(),17,9.5,self.navPostEvent)
         self.navPostMessage = ScreenText(self.BE.getBackPanel(), 17, 11, "Pos")
-        self.displayPlanetData()
+        self.displayVesselInfo()
         #self.displayNavigation()
 
     def ChoseStart(self):
@@ -42,7 +42,7 @@ class Vessel:
             p.remove()
             self.completeInit()
 
-    def displayPlanetData(self):
+    def displayVesselInfo(self):
 
         data = "Vessel Data:\n"
         data += "Name: "+str(self.name)+"\n"
@@ -63,6 +63,15 @@ class Vessel:
         self.navPlanet = self.navPlanet.getInferior()
         self.displayNavigation()
 
+    def navPostEvent(self, button):
+        self.navPlanet = self.navPlanet.getPosterior()
+        self.displayNavigation()
+
+    def navSelEvent(self, button):
+        self.targetPlanet = self.navPlanet
+        self.displayNavigation()
+        self.displayVesselInfo()
+
     def runTurn(self):
-        self.displayPlanetData()
+        self.displayVesselInfo()
         self.displayNavigation()
