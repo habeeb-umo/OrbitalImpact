@@ -12,15 +12,20 @@ from BackEnd import BackEngine
 
 class MainPanel (ShowBase):
     def __init__(self):
+        #This is essantially the main, the Panda3d calls
+
+        #variables for laying out GUI elements
         self.STEP=.06
         self.TOP=.67
         self.LEFT=1.23
 
+        #Initialize the window
         loadPrcFileData("","window-title Orbital Impact")
         loadPrcFileData("", "fullscreen 0")
         loadPrcFileData("", "win-size 1280 720")
         ShowBase.__init__(self)
 
+        #Initialize the actual GUI
         self.elementList=[] #a list of lists containing the GUI element and it's Panda3d node
         self.setUpCamNode()
         self.loadPanel()
@@ -28,8 +33,11 @@ class MainPanel (ShowBase):
         self.BE=BackEngine(self)
 
     def setUpCamNode(self):
+        #set cam position and orientation
         self.cam.setPos(0,-27,0)
         self.cam.setHpr(0,0,0)
+
+        #Code for event detection
         self.picker= CollisionTraverser()
         self.queue = CollisionHandlerQueue()
 
@@ -50,26 +58,30 @@ class MainPanel (ShowBase):
         self.accept('mouse1', self.onClick)
 
     def loadPanel(self):
+        #Enable shadows
         self.render.setShaderAuto()
-        #Load the back panel that all elements will be attached to
-        self.backPanel = self.loader.loadModel("GDAT/Meshes/BackPanel.egg")
 
+        #Load the back panel that all elements will be attached to and orient it
+        self.backPanel = self.loader.loadModel("GDAT/Meshes/BackPanel.egg")
         self.backPanel.setPos(0,1,0)
         self.backPanel.setScale(10)
         self.backPanel.setHpr(90,0,0)
         self.backPanel.reparentTo(self.render)
-        self.backPanel.setShaderAuto()
-        #load the sky_box This shouldn't ever be visible, but if it is, we mainain emersion
+        self.backPanel.setShaderAuto() #Enable shadows on
+
+        #load the sky_box This shouldn't ever be visible, but if it is, we maintain emersion
         self.skyBox = self.loader.loadModel("GDAT/Meshes/solar_sky_sphere.egg.pz")
         self.skyBox.reparentTo(self.render)
         self.skyBox.setScale(100)
-
         self.skyTexture = self.loader.loadTexture("GDAT/Textures/img2.jpg")#use img 2 or img3
         self.skyBox.setTexture(self.skyTexture,1)
 
-        #self.grid()
+        #self.grid() #For debug and showing gridding.
 
     def setupLights(self):
+        #In general this method places a single spaotlight behind the camera, shinning at the panel
+
+        #Create a holder node for debug, and finding the spothlight
         self.primaryLightHolder=self.loader.loadModel("GDAT/Meshes/planet_sphere.egg.pz")
         self.primaryLightHolder.setPos(0,-70,50)
         self.primaryLightHolder.setScale(1)
@@ -106,10 +118,6 @@ class MainPanel (ShowBase):
             tNode.setPos(-.13, x, y)
             tNode.setShaderAuto()
 
-    def place(self, element):
-        func = element.testFunc()
-        func(element)
-
     def getObjectHit(self, mpos):  # mpos is the position of the mouse on the screen
         self.pickedObj = None  # be sure to reset this
         self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
@@ -117,10 +125,8 @@ class MainPanel (ShowBase):
         if self.queue.getNumEntries() > 0:
             self.queue.sortEntries()
             self.pickedObj = self.queue.getEntry(0).getIntoNodePath()
-
             parent = self.pickedObj.getParent()
             self.pickedObj = None
-
             while parent != self.render:
                 if parent.getTag('pickable') == 'true':
                     self.pickedObj = parent
@@ -133,6 +139,7 @@ class MainPanel (ShowBase):
         obj.setTag('pickable', 'true')
 
     def onClick(self):
+        #called when an object is clicked. selfpickedObj is the clicked object
         self.getObjectHit(self.mouseWatcherNode.getMouse())
         if self.pickedObj != None:
             self.handleEvent(self.pickedObj)
@@ -144,16 +151,19 @@ class MainPanel (ShowBase):
         return
 
     def XgridToLoc(self, xgrid):
+        #converts locations given by back-end to their actual locations
         return self.LEFT-(xgrid*self.STEP)
 
     def YgridToLoc(self, ygrid):
         return self.TOP-(ygrid*self.STEP)
 
-    def getPanelNode(self):
-        return self.backPanel
-
+    #Adds node to elemet list so it becomes clickable
     def addToElementList(self, nodeElement):
         self.elementList.append(nodeElement)
+
+    #Returns the Panel node
+    def getPanelNode(self):
+        return self.backPanel
 
 app=MainPanel()
 app.run()

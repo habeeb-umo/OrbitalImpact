@@ -3,6 +3,8 @@ from Body import Body
 
 
 class SolarSystem:
+    #Models the solar system by a list of Body objects
+
     def __init__(self,backEngine, size):
         self.BE=backEngine
         self.celestials=[]
@@ -27,6 +29,8 @@ class SolarSystem:
     def runTurn(self):
         for planet in self.celestials:
             planet.runTurn()
+
+    #computes the tier of each planet bassed on it's index reletive to the solarsystem size
     def computeTier(self, i):
         if(i>(self.size/(3.0)*2.0)):
             return 3

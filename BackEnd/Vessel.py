@@ -9,8 +9,8 @@ class Vessel:
     def __init__(self, BE, name):
         self.name = name
         self.BE = BE
-        self.ChoseStart()
-        self.veselData=ScreenText(self.BE.getBackPanel(),15,2,"No Planet Data")
+        self.ChoseStart() #Get the starting planet
+        self.vesselData=ScreenText(self.BE.getBackPanel(),15,2,"No Planet Data")
 
     def completeInit(self):
         #Setting up the navigation pane
@@ -28,18 +28,19 @@ class Vessel:
         self.jumpTurns = 0
         self.displayVesselInfo()
 
+    #Sets up GUI for users to select starting planet
     def ChoseStart(self):
         self.message = ScreenText(self.BE.getBackPanel(),0,.5,"Select a Starting Planet")
         self.pButtons = []
         for i in range (0, len(self.BE.getSolarSystem()),1):
             self.pButtons.append(PlanetButton(self.BE.getBackPanel(),i,1,self.selectedPlanet))
-
+    #Gets Event handler for the clicked planet
     def selectedPlanet(self, buttonClicked):
         for i in range(0, len(self.pButtons), 1):
             if self.pButtons[i] == buttonClicked:
                 self.clearStart(i)
                 return
-
+    #Clears the starting UI
     def clearStart(self, planetIndex):
         self.message.remove()
         self.planet=self.BE.getSolarSystem()[planetIndex]
@@ -48,6 +49,7 @@ class Vessel:
             p.remove()
             self.completeInit()
 
+    #Shows the current vessel data
     def displayVesselInfo(self):
         data = "Vessel Data:\n"
         data += "Name: "+str(self.name)+"\n"
@@ -55,16 +57,14 @@ class Vessel:
         data += "Target: "+self.targetPlanet.getName()+"\n"
         data += "Dv: "+str(self.dV)+"\n"
         data += "Turns to transfer "+str(self.jumpTurns)
-        self.veselData.updateText(data)
+        self.vesselData.updateText(data)
 
+    #Complete navigation
     def displayNavigation(self):
         navDataText = "NAV Data\n"
         navDataText += "Selected Target: "+self.navPlanet.getName()+"\n"
         navDataText += "Dv To Target: "+str(self.planet.distanceTo(self.navPlanet))+"\n"
         self.navData.updateText(navDataText)
-
-    def navEvent(self, button):
-        print "TODO!"
 
     def navInfEvent(self, button):
         self.navPlanet = self.navPlanet.getInferior()

@@ -1,7 +1,7 @@
 import random
 from random import *
 class Body:
-    def __init__(self, solSys, creationTier, rank, name="noname Planet"):
+    def __init__(self, solSys, creationTier, rank, name="Noname Planet"):
         self.solSys=solSys
         self.name=name
 
@@ -19,11 +19,11 @@ class Body:
 
 
         #internal variables for handling transfer window costs and creation
-        self.originalDistance=0 #the original distance between self and the inferior planet
-        self.distanceVariance=0 #the absolute value that the distance will vary by
-        self.activeVariance=0 #the current amount of variance
-        self.increasingVariance =False  #if the variance is increasing or decreasing
-        self.orbitalVelocity=0 #the amount of change in variance each turn (step)
+        self.originalDistance = 0 #the original distance between self and the inferior planet
+        self.distanceVariance = 0 #the absolute value that the distance will vary by
+        self.activeVariance = 0 #the current amount of variance
+        self.increasingVariance = False  #if the variance is increasing or decreasing
+        self.orbitalVelocity = 0 #the amount of change in variance each turn (step)
         self.tier=creationTier
 
         if self.tier==1:
@@ -90,14 +90,18 @@ class Body:
     
     def runTurn(self):
         if self.rank !=0:
+            #Change the inferior distance by the orbital velocity +- bassed on increasingVariencce
             if self.increasingVariance:
                 self.inferiorDistance = self.inferiorDistance+self.orbitalVelocity
             if not self.increasingVariance:
                 self.inferiorDistance = self.inferiorDistance-self.orbitalVelocity
+
+            #If at apoapsis, or periapsis, flip increasing
             if self.inferiorDistance > (self.originalDisance+self.distanceVariance):
                 self.increasingVariance = False
             if self.inferiorDistance < (self.originalDisance-self.distanceVariance):
                 self.increasingVariance = True
+            #set the distance on the inferior planet
             self.inferior.setPosteriorDistance(self.inferiorDistance)
 
     def distanceTo(self, targetBody):

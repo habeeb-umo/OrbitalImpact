@@ -6,7 +6,7 @@ from GUI import PlanetButton
 
 
 class BackEngine:
-
+    #Main entry point for all back-end logic of the game, holding the vessels, and the solar systems, and controling all game events
     def __init__(self, backPanel):
         self.BP = backPanel
         self.turn = 0
@@ -18,7 +18,12 @@ class BackEngine:
     def runTurn(self, turnButton):
         self.solSystem.runTurn()
         self.activeVessel.runTurn()
+        self.turn = self.turn + 1
+
+    #returns the solar system
     def getSolarSystem(self):
         return self.solSystem
+
+    #returns the MainPannel object
     def getBackPanel(self):
         return self.BP
