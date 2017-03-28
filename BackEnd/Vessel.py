@@ -1,3 +1,5 @@
+import math
+
 from GUI import ScreenText
 from GUI import PlanetButton
 from GUI import Button
@@ -11,6 +13,7 @@ class Vessel:
         self.veselData=ScreenText(self.BE.getBackPanel(),15,2,"No Planet Data")
 
     def completeInit(self):
+        #Setting up the navigation pane
         self.navData = ScreenText(self.BE.getBackPanel(), 15, 7, "")
         self.targetPlanet = self.planet
         self.navPlanet = self.planet
@@ -20,8 +23,10 @@ class Vessel:
         self.navSelMessage = ScreenText(self.BE.getBackPanel(),16,11, "Sel")
         self.navPostButton = Button(self.BE.getBackPanel(),17,9.5,self.navPostEvent)
         self.navPostMessage = ScreenText(self.BE.getBackPanel(), 17, 11, "Pos")
+
+        self.dV = 45  # In the future this will come from some combination of subsystems
+        self.jumpTurns = 0
         self.displayVesselInfo()
-        #self.displayNavigation()
 
     def ChoseStart(self):
         self.message = ScreenText(self.BE.getBackPanel(),0,.5,"Select a Starting Planet")
@@ -38,16 +43,18 @@ class Vessel:
     def clearStart(self, planetIndex):
         self.message.remove()
         self.planet=self.BE.getSolarSystem()[planetIndex]
+        self.planet.addToOrbit(self)
         for p in self.pButtons:
             p.remove()
             self.completeInit()
 
     def displayVesselInfo(self):
-
         data = "Vessel Data:\n"
         data += "Name: "+str(self.name)+"\n"
         data += "Location: "+self.planet.getName()+"\n"
-        data += "Target: "+self.targetPlanet.getName()
+        data += "Target: "+self.targetPlanet.getName()+"\n"
+        data += "Dv: "+str(self.dV)+"\n"
+        data += "Turns to transfer "+str(self.jumpTurns)
         self.veselData.updateText(data)
 
     def displayNavigation(self):
@@ -69,9 +76,19 @@ class Vessel:
 
     def navSelEvent(self, button):
         self.targetPlanet = self.navPlanet
+        self.jumpTurns = self.planet.distanceTo(self.targetPlanet)/self.dV
+        math.floor(self.jumpTurns)
         self.displayNavigation()
         self.displayVesselInfo()
 
     def runTurn(self):
+        if self.targetPlanet != self.planet:
+            if self.jumpTurns == 0:
+                self.planet.removeFromOrbit(self)
+                self.planet = self.targetPlanet
+                self.planet.addToOrbit(self)
+            else:
+                self.jumpTurns = self.jumpTurns - 1
         self.displayVesselInfo()
         self.displayNavigation()
+
